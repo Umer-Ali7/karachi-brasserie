@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "project": {
+    "name": "demo",
+    "productType": null,
+    "stack": [
+      "nextjs",
+      "react",
+      "tailwind-v4"
+    ]
+  },
+  "sources": {
+    "tokens": [
+      "app/globals.css"
+    ],
+    "components": [],
+    "assets": [
+      "public/images"
+    ],
+    "instructions": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  "design": {
+    "colorMode": "dark",
+    "colors": {
+      "background": "#131313",
+      "foreground": "#F9F9F6",
+      "accent": "#D4AF37"
+    },
+    "typography": {
+      "display": "Georgia, serif",
+      "body": "Arial, sans-serif"
+    },
+    "spacing": {},
+    "radius": {
+      "system": "sharp"
+    },
+    "shadows": {},
+    "motion": {},
+    "density": "airy"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": [],
+    "patterns": []
+  },
+  "constraints": {
+    "must": [],
+    "avoid": []
+  },
+  "decisions": [
+    "Use a cinematic dark-brasserie direction with one champagne-gold accent.",
+    "Keep containers mostly sharp and editorial instead of card-heavy.",
+    "Use motion for atmosphere, hierarchy, and interaction feedback, with reduced-motion fallbacks."
+  ],
+  "evidence": [
+    {
+      "fact": "design.colorMode:light",
+      "source": "app/globals.css"
+    },
+    {
+      "fact": "design.tokens",
+      "source": "app/globals.css"
+    },
+    {
+      "fact": "project.instructions",
+      "source": "AGENTS.md"
+    },
+    {
+      "fact": "project.instructions",
+      "source": "CLAUDE.md"
+    },
+    {
+      "fact": "project.stack:nextjs",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:react",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:tailwind-v4",
+      "source": "package.json"
+    }
+  ],
+  "generatedAt": "2026-08-10T17:52:55.104Z"
+}
