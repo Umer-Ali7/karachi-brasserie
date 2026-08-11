@@ -111,3 +111,22 @@
   .experience-copy h2{margin-bottom:4px}
   .experience-copy>p:not(.kicker){margin:24px 0 26px;max-width:34rem}
 }
+
+/* Next/Image sizing and overlays. These overrides also prevent legacy CSS
+   backgrounds from downloading the same image a second time. */
+.cover-image{object-fit:cover}
+.hero-photo,
+.experience-image,
+.reservation-moment-image,
+.dish-thumb{background-image:none;position:relative;overflow:hidden}
+.hero-photo{position:absolute}
+.reservation-moment-image{position:absolute}
+.hero-photo::after,
+.experience-image::after,
+.reservation-moment-image::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none}
+.hero-photo::after{background:linear-gradient(90deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.62) 42%,rgba(0,0,0,.48) 100%)}
+.experience-image::after{background:linear-gradient(rgba(0,0,0,.04),rgba(0,0,0,.38))}
+.reservation-moment-image::after{background:linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,.78))}
+.brand-logo{width:44px;height:44px;object-fit:contain;flex:none}
+.reel-card video{position:relative;z-index:0}
+@media(max-width:850px){.brand-logo{width:40px;height:40px}}
