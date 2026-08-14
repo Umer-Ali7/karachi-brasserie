@@ -1,8 +1,8 @@
 "use client";
 
-import { ArrowUpRight, Play } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
+import { useCallback, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -19,12 +19,15 @@ export default function HeroVideo({ onReserve }: HeroVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const primaryCopyRef = useRef<HTMLDivElement>(null);
   const secondaryCopyRef = useRef<HTMLDivElement>(null);
+  const doorLeftRef = useRef<HTMLDivElement>(null);
+  const doorRightRef = useRef<HTMLDivElement>(null);
+  const doorLogoRef = useRef<HTMLDivElement>(null);
   const gsapContextRef = useRef<gsap.Context | null>(null);
   const triggerRef = useRef<ScrollTrigger | null>(null);
   const copyTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const doorTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const targetTimeRef = useRef(0);
   const seekFrameRef = useRef<number | null>(null);
-  const [entered, setEntered] = useState(false);
 
   const flushSeek = useCallback(() => {
     if (seekFrameRef.current !== null) return;
@@ -36,20 +39,6 @@ export default function HeroVideo({ onReserve }: HeroVideoProps) {
     });
   }, []);
 
-  useEffect(() => {
-    if (!entered) {
-      const previousOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = previousOverflow;
-      };
-    }
-    document.body.style.overflow = "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [entered]);
-
   const initializeScrollTrigger = useCallback((video: HTMLVideoElement) => {
     const wrapper = wrapperRef.current;
     const pin = pinRef.current;
@@ -58,14 +47,33 @@ export default function HeroVideo({ onReserve }: HeroVideoProps) {
     triggerRef.current?.kill();
     gsapContextRef.current?.revert();
     copyTimelineRef.current = null;
+    doorTimelineRef.current = null;
     video.pause();
     video.currentTime = 0;
 
     gsapContextRef.current = gsap.context(() => {
       const primary = primaryCopyRef.current;
       const secondary = secondaryCopyRef.current;
+      const doorLeft = doorLeftRef.current;
+      const doorRight = doorRightRef.current;
+      const doorLogo = doorLogoRef.current;
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const mobile = window.matchMedia("(max-width: 640px)").matches;
+
+      if (doorLeft && doorRight && doorLogo) {
+        gsap.set([doorLeft, doorRight], { xPercent: 0 });
+        gsap.set(doorLogo, { autoAlpha: 1, scale: 1 });
+        if (reduceMotion) {
+          gsap.set(doorLeft, { xPercent: -100 });
+          gsap.set(doorRight, { xPercent: 100 });
+          gsap.set(doorLogo, { autoAlpha: 0 });
+        } else {
+          doorTimelineRef.current = gsap.timeline({ paused: true, defaults: { ease: "power3.inOut" } })
+            .to(doorLogo, { autoAlpha: 0, scale: 1.08, duration: 0.16 }, 0)
+            .to(doorLeft, { xPercent: -100, duration: 0.84 }, 0.08)
+            .to(doorRight, { xPercent: 100, duration: 0.84 }, 0.08);
+        }
+      }
 
       if (primary && secondary) {
         if (reduceMotion) {
@@ -112,6 +120,10 @@ export default function HeroVideo({ onReserve }: HeroVideoProps) {
           const currentVideo = videoRef.current;
           if (!currentVideo || !Number.isFinite(currentVideo.duration) || currentVideo.duration <= 0) return;
           targetTimeRef.current = self.progress * currentVideo.duration;
+          const doorProgress = mobile ? 0.2 : 0.18;
+          if (doorTimelineRef.current) {
+            doorTimelineRef.current.progress(Math.min(self.progress / doorProgress, 1));
+          }
           copyTimelineRef.current?.progress(self.progress);
           flushSeek();
         },
@@ -140,18 +152,13 @@ export default function HeroVideo({ onReserve }: HeroVideoProps) {
       triggerRef.current?.kill();
       triggerRef.current = null;
       copyTimelineRef.current = null;
+      doorTimelineRef.current = null;
       gsapContextRef.current?.revert();
       gsapContextRef.current = null;
       if (seekFrameRef.current !== null) cancelAnimationFrame(seekFrameRef.current);
       seekFrameRef.current = null;
     };
   }, [flushSeek, initializeScrollTrigger]);
-
-  const enter = () => {
-    setEntered(true);
-    videoRef.current?.focus({ preventScroll: true });
-    window.setTimeout(() => ScrollTrigger.refresh(), 750);
-  };
 
   return (
     <section ref={wrapperRef} className="hero-video-scroll" aria-label="Karachi Brasserie cinematic introduction">
@@ -184,18 +191,14 @@ export default function HeroVideo({ onReserve }: HeroVideoProps) {
         <h1>Stay for <em>the story.</em></h1>
         <p className="hero-video-description">Good food, warm hospitality, and a table worth lingering at.</p>
       </div>
-      <AnimatePresence>
-        {!entered && (
-          <motion.div className="hero-video-gate" initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.55, delay: 0.16 }}>
-            <motion.div className="hero-video-door hero-video-door-left" initial={{ x: 0 }} exit={{ x: "-100%" }} transition={{ duration: 0.72, ease: [0.76, 0, 0.24, 1] }} />
-            <motion.div className="hero-video-door hero-video-door-right" initial={{ x: 0 }} exit={{ x: "100%" }} transition={{ duration: 0.72, ease: [0.76, 0, 0.24, 1] }} />
-            <motion.button type="button" className="hero-video-enter" onClick={enter} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.5 }}>
-              <span><Play size={15} fill="currentColor" /> Enter the brasserie</span>
-              <small>Scroll to experience</small>
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="hero-video-gate" aria-hidden="true">
+        <div ref={doorLeftRef} className="hero-video-door hero-video-door-left" />
+        <div ref={doorRightRef} className="hero-video-door hero-video-door-right" />
+        <div ref={doorLogoRef} className="hero-video-door-logo">
+          <Image src="/images/logo-kb.png" alt="" width={72} height={72} quality={80} priority className="hero-video-door-mark" />
+          <span>KARACHI BRASSERIE</span>
+        </div>
+      </div>
       </div>
     </section>
   );

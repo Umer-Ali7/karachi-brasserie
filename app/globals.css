@@ -147,13 +147,15 @@
 .hero-video-copy h1 em{font-weight:400;color:var(--gold)}
 .hero-video-copy>p:not(.kicker){font-family:Georgia,serif;color:#e1ded7;font-size:clamp(16px,1.5vw,20px);line-height:1.55;max-width:430px;margin:26px 0 28px}
 .hero-video-actions{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
-.hero-video-gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow:hidden;background:#131313}
+.hero-video-gate{position:absolute;inset:0;z-index:10;display:grid;place-items:center;overflow:hidden;background:transparent;pointer-events:none}
 .hero-video-door{position:absolute;top:0;bottom:0;width:50%;background:#131313}
 .hero-video-door-left{left:0}.hero-video-door-right{right:0}
+.hero-video-door-logo{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--text);font-size:10px;letter-spacing:.24em;text-align:center;white-space:nowrap;will-change:transform,opacity}
+.hero-video-door-mark{width:72px;height:72px;object-fit:contain}
 .hero-video-enter{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(212,175,55,.68);background:rgba(19,19,19,.72);color:var(--text);padding:20px 28px;text-transform:uppercase;letter-spacing:.16em;font-size:10px;backdrop-filter:blur(14px);transition:border-color 180ms ease,color 180ms ease}
 .hero-video-enter:hover{border-color:var(--gold);color:var(--gold)}
 .hero-video-enter span{display:flex;align-items:center;gap:10px}.hero-video-enter small{color:#9d9a91;font-size:8px;letter-spacing:.12em}
-@media(max-width:640px){.hero-video-copy{left:20px;right:20px;top:clamp(145px,22svh,190px)}.hero-video-copy h1{font-size:clamp(42px,12.5vw,62px)}.hero-video-actions{align-items:flex-start;flex-direction:column;gap:14px}.hero-video-actions .gold-button{width:100%;max-width:320px}.hero-video-enter{padding:18px 22px}}
+@media(max-width:640px){.hero-video-copy{left:20px;right:20px;top:clamp(145px,22svh,190px)}.hero-video-copy h1{font-size:clamp(42px,12.5vw,62px)}.hero-video-actions{align-items:flex-start;flex-direction:column;gap:14px}.hero-video-actions .gold-button{width:100%;max-width:320px}.hero-video-door-logo{font-size:9px;letter-spacing:.18em}.hero-video-door-mark{width:60px;height:60px}}
 @media(prefers-reduced-motion:reduce){.hero-video-copy-primary{transform:none!important;opacity:1!important;visibility:visible!important}.hero-video-copy-secondary{display:none}}
 
 /* Final interaction and accessibility polish */
